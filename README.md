@@ -28,6 +28,13 @@ The constraint: **no calling a library's clustering implementation**. Distance f
 | # | Algorithm | Key Ideas |
 |---|-----------|-----------|
 | [N01](notebook/N01-KNN.py) | K-Means | `vmap` over centroids, `segment_sum` for updates, `lax.while_loop` for iteration |
+| [N01](notebook/N01-KNN.py) | K-Medoids | Medoid selection via `einsum` affinity, swap-based updates, robust to outliers |
+
+### Evaluation Metrics
+
+Both notebooks compute:
+- **Inertia** — sum of squared distances from each point to its assigned centroid
+- **Silhouette Score** — vectorized via `einsum` on the full affinity matrix; no Python loops
 
 ---
 
@@ -52,6 +59,7 @@ uv run marimo edit notebook/N01-KNN.py
 - Gaussian Mixture Models — soft assignments with EM
 - Spectral Clustering — graph Laplacian approach
 - Mini-batch K-Means — stochastic updates for large data
+- Hierarchical Clustering — dendrogram-based, no `k` required upfront
 
 ---
 
