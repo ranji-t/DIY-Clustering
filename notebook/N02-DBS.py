@@ -83,11 +83,18 @@ def _(jax, jnp):
             (0, True, init_labels),
         )
 
+        # Boundary Point addition
+        boundary_labels = jnp.where(adjacency, labels[None, :], jnp.inf).min(
+            axis=1
+        )
+
         # Give proper labes
-        proper_labels = jnp.searchsorted(jnp.unique(labels), labels, side="right")
+        proper_labels = jnp.searchsorted(
+            jnp.unique(boundary_labels), boundary_labels, side="right"
+        )
 
         # Put outlier as -1 label
-        proper_labels = jnp.where(jnp.isinf(labels), -1, proper_labels)
+        proper_labels = jnp.where(jnp.isinf(boundary_labels), -1, proper_labels)
 
         # Return
         return proper_labels, actual_n_iters
@@ -145,9 +152,11 @@ def _(jnp, load_iris, minmax_scale):
 
 
 @app.cell
-def _(X_arr, distance_matrix):
+def _(X_arr, distance_matrix, jnp):
     # Compute Self Dist Array
-    pairwise_dist = distance_matrix(X_arr, X_arr)
+    pairwise_dist = jnp.fill_diagonal(
+        distance_matrix(X_arr, X_arr), 0, inplace=False
+    )
     return (pairwise_dist,)
 
 
@@ -155,7 +164,7 @@ def _(X_arr, distance_matrix):
 def _():
     # DBScan parameters
     eps = 0.08
-    min_samples = 10
+    min_samples = 5
 
     # Num inertations
     n_iter: int = 100
@@ -209,6 +218,11 @@ def _(X_arr, eps, go, jnp, labels, min_samples):
     )
 
     _fig.show()
+    return
+
+
+@app.cell
+def _():
     return
 
 
