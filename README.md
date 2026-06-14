@@ -29,10 +29,11 @@ The constraint: **no calling a library's clustering implementation**. Distance f
 |---|-----------|-----------|
 | [N01](notebook/N01-KNN.py) | K-Means | `vmap` over centroids, `segment_sum` for updates, `lax.while_loop` for iteration |
 | [N01](notebook/N01-KNN.py) | K-Medoids | Medoid selection via `einsum` affinity, swap-based updates, robust to outliers |
+| [N02](notebook/N02-DBS.py) | DBSCAN | `vmap` pairwise distance matrix, `einsum` for core-to-core adjacency, `lax.while_loop` for label propagation |
 
 ### Evaluation Metrics
 
-Both notebooks compute:
+All notebooks compute:
 - **Inertia** — sum of squared distances from each point to its assigned centroid
 - **Silhouette Score** — vectorized via `einsum` on the full affinity matrix; no Python loops
 
@@ -55,7 +56,6 @@ uv run marimo edit notebook/N01-KNN.py
 
 ## What's Next
 
-- DBSCAN — density-based, no need to pick `k` upfront
 - Gaussian Mixture Models — soft assignments with EM
 - Spectral Clustering — graph Laplacian approach
 - Mini-batch K-Means — stochastic updates for large data
